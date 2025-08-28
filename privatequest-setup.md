@@ -62,7 +62,7 @@ To use a phone:
 - In the Init tab, tap ‘Set DeviceKey’
 - In the Config tab, tap 'Set Time'
 
-# 5. Disable quest system software updates
+## 5. Disable quest system software updates
 **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
 
 - Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
