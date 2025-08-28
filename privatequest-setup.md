@@ -1,6 +1,7 @@
 ## How to switch to a PrivateQuest setup
 
-(this guide is a work in progress!)
+> [!WARNING]
+> This guide is a work in progress! We're still figuring out the best ways to set up a Quest in a way that bypasses meta. Use this guide at your own risk!
 
 ## 1. Back up your tokens
 - Go to a site like <https://secure.oculus.com/> and log in
