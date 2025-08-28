@@ -74,9 +74,6 @@ Now decide if you want to use your tokens to log your headset back in, or use an
 
 You'll want a logged in setup if you want to play the games you bought from the quest store! If not, it's better to go accountless, because then your headset won't be tied to a meta account.
 
-> [!NOTE]
-> *v72 and lower can't use the logged-in setup!*. In that case, it'll throw an error about it needing to be a retail device during the Skip NUX step. Please use the accountless setup on v72 or lower.
-
 ## Logged-in setup
 You'll need root to skip the first time setup screen (NUX). For rooting to work, you'll need to be on a vulnerable version of horizonOS. See [the exploit github page](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) for information on which versions are vulnerable.
 
