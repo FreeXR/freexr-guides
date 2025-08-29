@@ -73,7 +73,7 @@ You'll need root to skip the first time setup screen (NUX). For rooting to work,
 - Where it says DeviceKey, change it to the one you saved from earlier
 - Tap Set Key, press yes when it asks again, then scroll to the bottom and hit Back
 
-> [!WARNING]
+> [!CAUTION]
 > **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
 >
 > - Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
@@ -108,7 +108,7 @@ An accountless setup is easy and doesn't require root.
 - In PrivateQuest:
     - Init -> Set DeviceKey
  
-> [!WARNING]
+> [!CAUTION]
 > **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
 >
 > - Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
