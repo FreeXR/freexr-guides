@@ -4,30 +4,40 @@
 > This guide is a work in progress! We're still figuring out the best ways to set up a Quest in a way that bypasses meta. Use this guide at your own risk!
 
 ## 1. Back up your tokens
+### DeviceKey
 - Go to a site like <https://secure.oculus.com/> and log in
 - Open your browser's development tools and find the cookies tab
-- Then, grab these:
-  - DeviceKey
-    - Get your `oc_www_at` cookie
-    - Run this in a terminal: `curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=xxx" --data-urlencode "doc_id=7400628006644133"`, where (xxx) is your access token 
-    - It'll spit some json back at you containing your DeviceKey. Keep it somewhere safe.
-  - Meta token & Oculus Token: 
-    - Either use a rooted phone, or install an android emulator (such as waydroid) on a PC to get this done
-    - If you want to use waydroid:
-      - Install waydroid using the guides available for your platform (windows/mac/linux/whatever)
-      - Initialize waydroid with `waydroid init -s GAPPS` (you need google play services for the meta horizon app to work)
-      - Register your device id at [google's official page](https://www.google.com/android/uncertified)
-      - After registering, wait a few minutes, then restart waydroid 
-      - Install these using [this script](https://github.com/casualsnek/waydroid_script):
-        - ARM translation layer, so we can run the meta horizon app. Use either libhoudini or libndk (libndk crashed the meta horizon app in my case, libhoudini worked)
-        - magisk (we need root)
-    - Then using either your rooted phone or waydroid:
-      - Use either the play store, apkmirror, aurora store or whatever other method you prefer to install the Meta Horizon app
-      - Log into it
-      - Use root to copy  `/data/data/com.oculus.twilight/databases/prefs_db` to somewhere you can easily read it
-      - `prefs_db` is an sqlite file. You can use something like [sqlitebrowser](https://sqlitebrowser.org/) to read it's contents.
-          - You're looking for `MetaProfileGenericAuthMap` in the `preferences` table within `prefs_db`. If using sqlitebrowser, go to the Browse Data Tab, select the `preferences` table, and find `MetaProfileGenericAuthMap`. It should be a bunch of JSON code. Look for `id` and `token`, and get their values. Those are what you need!
-          - You can also easily get it using this SQL code: `SELECT value FROM preferences WHERE key=='MetaProfileGenericAuthMap'`
+- Find your `oc_www_at` cookie and get its value.
+- Run this in a terminal. Replace (xxx) with the value of the `oc_www_at` cookie:
+```
+curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=xxx" --data-urlencode "doc_id=7400628006644133"
+```
+- It'll spit some json back at you containing your DeviceKey. Keep it somewhere safe.
+
+### Meta Auth Tokens
+Either use a rooted phone, or install an android emulator (such as waydroid) on a PC to get this done
+
+If you want to use waydroid:
+- Install waydroid using the guides available for your platform (windows/mac/linux/whatever)
+- Initialize waydroid with `waydroid init -s GAPPS` (you need google play services for the meta horizon app to work)
+- Register your device id at [google's official page](https://www.google.com/android/uncertified)
+- After registering, wait a few minutes, then restart waydroid 
+- Install these using [this script](https://github.com/casualsnek/waydroid_script):
+    - ARM translation layer, so we can run the meta horizon app. Use either libhoudini or libndk (libndk crashed the meta horizon app in my case, libhoudini worked)
+    - magisk (we need root)
+ 
+Then using either your rooted phone or waydroid:
+
+- Use either the play store, apkmirror, aurora store or whatever other method you prefer to install the Meta Horizon app
+- Log into it
+- Use root to copy  `/data/data/com.oculus.twilight/databases/prefs_db` to somewhere you can easily read it
+
+`prefs_db` is an sqlite file. You can use something like [sqlitebrowser](https://sqlitebrowser.org/) to read it's contents.
+
+You're looking for `MetaProfileGenericAuthMap` in the `preferences` table within `prefs_db`. If using sqlitebrowser, go to the Browse Data Tab, select the `preferences` table, and find `MetaProfileGenericAuthMap`. It should be a bunch of JSON code. Look for `id` and `token`, and get their values. Those are what you need!
+
+> [!TIP]
+> You can also easily get it using this SQL code: `SELECT value FROM preferences WHERE key=='MetaProfileGenericAuthMap'`
 
 ## 2. Download and install PrivateQuest
 On your phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
