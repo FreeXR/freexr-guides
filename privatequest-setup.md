@@ -90,14 +90,14 @@ An accountless setup is easy and doesn't require root.
 
 In PrivateQuest:
 
-- Init -> Set DeviceKey
-- Control -> Developer mode -> Get
-- Control -> Developer mode -> Switch to ON position
-- Control -> ADB -> Get
-- Control -> ADB -> Switch to ON position
-- Init -> Set Oculus token
-- Init -> Set Meta token
-- Init -> Skip NUX
+- Init tab -> Set DeviceKey
+- Control tab -> Developer mode -> Get
+- Control tab -> Developer mode -> Switch to ON position
+- Control tab -> ADB -> Get
+- Control tab -> ADB -> Switch to ON position
+- Init tab -> Set Oculus token
+- Init tab -> Set Meta token
+- Init tab -> Skip NUX
 
 ## Logged-in setup
 > [!NOTE]
