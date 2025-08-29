@@ -32,7 +32,7 @@
 ## 2. Download and install PrivateQuest
 On your phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
 
-## 3. DISABLE YOUR HOME INTERNET
+## 3. Disable your home internet
 Either use your phone to start a hotspot without internet, or use your router to turn off the internet while keeping WiFi on. Either way, **don't let your quest reach the internet during setup!**
 
 To use a PC, laptop or other non-android device:
@@ -48,37 +48,33 @@ To use a phone:
   - **Turn off mobile data** on your phone and then start a hotspot.
 
 ## 4. PrivateQuest initial setup
-
-> [!NOTE]
-> PrivateQuest cannot find the headset if it's already set up, because it will already have been assigned a DeviceKey.
-
-> [!TIP]
-> If all you want to do is control your existing setup using PrivateQuest instead of the Horizon app, and don't need to reinstall or factory reset, you can set the DeviceKey to the one you gathered while backing up tokens. This will let you control a quest that has already been set up, but it won't be the same as a debloated install.
-
 - Factory reset your headset
 - Put on your headset and turn it on. Let it sit on the initial screen, **don't let it connect to wi-fi!**
 - Once it's in first time setup, connect to your headset using PrivateQuest.
     - Make sure the PrivateQuest app has access to bluetooth, location, and finding nearby devices
-- Open PrivateQuest and connect to the headset (tap on where it says your headset model) - it will say ‘connecting’ and then ‘connected’ at the bottom of the screen
+    - Note: PrivateQuest cannot find the headset if it's already set up, because it will already have been assigned a DeviceKey.
+- Tap the three dots in the top right and go to settings 
+- Where it says DeviceKey, change it to the one you backed up earlier
+- Tap Set Key, press yes when it asks again, then scroll to the bottom and hit Back
 
-## 5. Choose your setup
+> [!TIP]
+> If all you want to do is control your existing setup using PrivateQuest instead of the Horizon app, and don't need to reinstall or factory reset, you can skip the rest of the guide. Setting the DeviceKey is enough to gain control of an already set-up quest.
+
+## 5. Disable system software updates
+> [!CAUTION]
+> **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
+
+- Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset).
+- The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
+- Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
+
+## 6. Choose your setup
 Now decide if you want to use your tokens to log your headset back in, or use an accountless setup..
 
 You'll want a logged in setup if you want to play the games you bought from the quest store! If not, it's better to go accountless, because then your headset won't be tied to a meta account.
 
 ## Logged-in setup
 You'll need root to skip the first time setup screen (NUX). For rooting to work, you'll need to be on a vulnerable version of horizonOS. See [the exploit github page](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) for information on which versions are vulnerable.
-
-- In PrivateQuest, press the three dots in the top right and go to settings 
-- Where it says DeviceKey, change it to the one you saved from earlier
-- Tap Set Key, press yes when it asks again, then scroll to the bottom and hit Back
-
-> [!CAUTION]
-> **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
->
-> - Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
-> - The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
-> - Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
 
 - Connect to your quest using adb over TCP
 	- Run `adb shell pm disable-user --user 0 com.oculus.updater`
@@ -107,15 +103,6 @@ An accountless setup is easy and doesn't require root.
 
 - In PrivateQuest:
     - Init -> Set DeviceKey
- 
-> [!CAUTION]
-> **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
->
-> - Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
-> - The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
-> - Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
-
-- In PrivateQuest:
 	- Control -> Developer mode -> Get
 	- Control -> Developer mode -> Switch to ON position
 	- Control -> ADB -> Get
