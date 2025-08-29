@@ -115,7 +115,7 @@ An accountless setup is easy and doesn't require root.
 > - The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
 > - Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
 
-In PrivateQuest:
+- In PrivateQuest:
 	- Control -> Developer mode -> Get
 	- Control -> Developer mode -> Switch to ON position
 	- Control -> ADB -> Get
