@@ -85,8 +85,22 @@ Now decide if you want to use your tokens to log your headset back in, or use an
 
 You'll want a logged in setup if you want to play the games you bought from the quest store! If not, it's better to go accountless, because then your headset won't be tied to a meta account.
 
+## Accountless setup
+An accountless setup is easy and doesn't require root.
+
+- In PrivateQuest:
+    - Init -> Set DeviceKey
+	- Control -> Developer mode -> Get
+	- Control -> Developer mode -> Switch to ON position
+	- Control -> ADB -> Get
+	- Control -> ADB -> Switch to ON position
+	- Init -> Set Oculus token
+	- Init -> Set Meta token
+	- Init -> Skip NUX
+
 ## Logged-in setup
-You'll need root to skip the first time setup screen (NUX). For rooting to work, you'll need to be on a vulnerable version of horizonOS. See [the exploit github page](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) for information on which versions are vulnerable.
+> [!NOTE]
+> You'll need root to skip the first time setup screen (NUX). For rooting to work, you'll need to be on a vulnerable version of horizonOS. See [the exploit github page](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) for information on which versions are vulnerable.
 
 - Connect to your quest using adb over TCP
 	- Run `adb shell pm disable-user --user 0 com.oculus.updater`
@@ -109,19 +123,6 @@ Note: *In the horizon app, if it's still asking for a pairing code even though y
 - gain root and run `oculuspreferences --getc hmd_pairing_code` (fun fact: you can also set it to whatever you want with `oculuspreferences --setc hmd_pairing_code 12345`)
 - input that code into your horizon app
 -->
-
-## Accountless setup
-An accountless setup is easy and doesn't require root.
-
-- In PrivateQuest:
-    - Init -> Set DeviceKey
-	- Control -> Developer mode -> Get
-	- Control -> Developer mode -> Switch to ON position
-	- Control -> ADB -> Get
-	- Control -> ADB -> Switch to ON position
-	- Init -> Set Oculus token
-	- Init -> Set Meta token
-	- Init -> Skip NUX
 
 <!--
 old, may not be needed!
