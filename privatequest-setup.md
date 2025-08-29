@@ -61,14 +61,7 @@ To use a phone:
     - Make sure the PrivateQuest app has access to bluetooth, location, and finding nearby devices
 - Open PrivateQuest and connect to the headset (tap on where it says your headset model) - it will say ‘connecting’ and then ‘connected’ at the bottom of the screen
 
-## 5. Disable quest system software updates
-**If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
-
-- Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
-- The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
-- Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
-
-## 6. Choose your setup
+## 5. Choose your setup
 Now decide if you want to use your tokens to log your headset back in, or use an accountless setup..
 
 You'll want a logged in setup if you want to play the games you bought from the quest store! If not, it's better to go accountless, because then your headset won't be tied to a meta account.
@@ -77,8 +70,16 @@ You'll want a logged in setup if you want to play the games you bought from the 
 You'll need root to skip the first time setup screen (NUX). For rooting to work, you'll need to be on a vulnerable version of horizonOS. See [the exploit github page](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) for information on which versions are vulnerable.
 
 - In PrivateQuest, press the three dots in the top right and go to settings 
-- Where it says DeviceKey, change it to the one you saved from earlier 
+- Where it says DeviceKey, change it to the one you saved from earlier
 - Tap Set Key, press yes when it asks again, then scroll to the bottom and hit Back
+
+> [!WARNING]
+> **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
+>
+> - Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
+> - The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
+> - Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
+
 - Connect to your quest using adb over TCP
 	- Run `adb shell pm disable-user --user 0 com.oculus.updater`
 	- Use the [root exploit](<https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1>) to get root
@@ -104,8 +105,17 @@ Note: *In the horizon app, if it's still asking for a pairing code even though y
 ## Accountless setup
 An accountless setup is easy and doesn't require root.
 
-- In Private Quest:
+- In PrivateQuest:
     - Init -> Set DeviceKey
+ 
+> [!WARNING]
+> **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
+>
+> - Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset). 
+> - The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
+> - Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
+
+In PrivateQuest:
 	- Control -> Developer mode -> Get
 	- Control -> Developer mode -> Switch to ON position
 	- Control -> ADB -> Get
