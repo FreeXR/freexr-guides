@@ -88,31 +88,32 @@ You'll want a logged in setup if you want to play the games you bought from the 
 ## Accountless setup
 An accountless setup is easy and doesn't require root.
 
-- In PrivateQuest:
-    - Init -> Set DeviceKey
-	- Control -> Developer mode -> Get
-	- Control -> Developer mode -> Switch to ON position
-	- Control -> ADB -> Get
-	- Control -> ADB -> Switch to ON position
-	- Init -> Set Oculus token
-	- Init -> Set Meta token
-	- Init -> Skip NUX
+In PrivateQuest:
+
+- Init -> Set DeviceKey
+- Control -> Developer mode -> Get
+- Control -> Developer mode -> Switch to ON position
+- Control -> ADB -> Get
+- Control -> ADB -> Switch to ON position
+- Init -> Set Oculus token
+- Init -> Set Meta token
+- Init -> Skip NUX
 
 ## Logged-in setup
 > [!NOTE]
 > You'll need root to skip the first time setup screen (NUX). For rooting to work, you'll need to be on a vulnerable version of horizonOS. See [the exploit github page](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) for information on which versions are vulnerable.
 
 - Connect to your quest using adb over TCP
-	- Run `adb shell pm disable-user --user 0 com.oculus.updater`
-	- Use the [root exploit](<https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1>) to get root
-	- In the root shell, `oculussetting --set first_time_nux_ota_state rebooting && reboot`
- 	- After reboot, gain a root shell again. Then, in the root shell:
-		- `oculussetting --set first_time_nux_ota_state notify_endpoint`
-		- In the Config tab, Set the Oculus and Meta token to the ones you got from `MetaProfileGenericAuthMap`.
-		- Set UserId underneath both the Oculus and Meta token to the `UserId` you got from `MetaProfileGenericAuthMap`
+- Run `adb shell pm disable-user --user 0 com.oculus.updater`
+- Use the [root exploit](<https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1>) to get root
+- In the root shell, `oculussetting --set first_time_nux_ota_state rebooting && reboot`
+- After reboot, gain a root shell again. Then, in the root shell:
+    - `oculussetting --set first_time_nux_ota_state notify_endpoint`
+    - In the Config tab, Set the Oculus and Meta token to the ones you got from `MetaProfileGenericAuthMap`.
+	- Set UserId underneath both the Oculus and Meta token to the `UserId` you got from `MetaProfileGenericAuthMap`
 		<!-- - In privatequest over on your phone, use *Set Tokens* (*????? try not doing that, see if it works - rose*) -->
-		- `oculussetting --set first_time_nux_ota_state COMPLETE`
-		- `reboot`
+	- `oculussetting --set first_time_nux_ota_state COMPLETE`
+	- `reboot`
 - Verify the updater is disabled using `adb shell pm list packages -d`. It should show the updater in the list, which is the list of disabled packages.
 - Proceed with [Post-setup](#post-setup) for extra security against your quest getting forcibly updated
 
