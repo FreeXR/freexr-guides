@@ -34,7 +34,9 @@ Then using either your rooted phone or waydroid:
 
 `prefs_db` is an sqlite file. You can use something like [sqlitebrowser](https://sqlitebrowser.org/) to read it's contents.
 
-You're looking for `MetaProfileGenericAuthMap` in the `preferences` table within `prefs_db`. If using sqlitebrowser, go to the Browse Data Tab, select the `preferences` table, and find `MetaProfileGenericAuthMap`. It should be a bunch of JSON code. Look for `id` and `token`, and get their values. Those are what you need!
+You're looking for `MetaProfileGenericAuthMap` in the `preferences` table within `prefs_db`.
+
+If using sqlitebrowser, go to the Browse Data Tab, select the `preferences` table, and find `MetaProfileGenericAuthMap`. It should be a bunch of JSON code. Look for `id` and `token`, and get their values. Those are what you need!
 
 > [!TIP]
 > You can also easily get it using this SQL code: `SELECT value FROM preferences WHERE key=='MetaProfileGenericAuthMap'`
