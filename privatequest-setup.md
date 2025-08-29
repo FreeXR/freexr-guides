@@ -60,8 +60,6 @@ To use a phone:
 - Once it's in first time setup, connect to your headset using PrivateQuest.
     - Make sure the PrivateQuest app has access to bluetooth, location, and finding nearby devices
 - Open PrivateQuest and connect to the headset (tap on where it says your headset model) - it will say ‘connecting’ and then ‘connected’ at the bottom of the screen
-- In the Init tab, tap ‘Set DeviceKey’
-- In the Config tab, tap 'Set Time'
 
 ## 5. Disable quest system software updates
 **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
@@ -107,6 +105,7 @@ Note: *In the horizon app, if it's still asking for a pairing code even though y
 An accountless setup is easy and doesn't require root.
 
 - In Private Quest:
+    - Init -> Set DeviceKey
 	- Control -> Developer mode -> Get
 	- Control -> Developer mode -> Switch to ON position
 	- Control -> ADB -> Get
