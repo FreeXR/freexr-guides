@@ -58,7 +58,7 @@ To use a phone:
 - Tap Set Key, press yes when it asks again, then scroll to the bottom and hit Back
 
 > [!TIP]
-> If all you want to do is control your existing setup using PrivateQuest instead of the Horizon app, and don't need to reinstall or factory reset, you can skip the rest of the guide. Setting the DeviceKey is enough to gain control of an already set-up quest.
+> If all you want to do is control your existing setup using PrivateQuest instead of the Horizon app, and don't need to reinstall or factory reset, you can skip the rest of this guide. Setting the DeviceKey is enough to gain control of an already set-up quest.
 
 ## 5. Disable system software updates
 > [!CAUTION]
