@@ -149,9 +149,6 @@ old, may not be needed!
 -->
 
 ## Post-setup
-> [!CAUTION]
-> Event Horizon installs Magisk onto your quest. **NEVER** press the Install or Uninstall buttons inside Magisk. That will hard-brick your quest!
-
 - If you haven't already, install [Event Horizon](https://github.com/veygax/eventhorizon). This will root your quest with a simple button press! You can also set it to always root your quest on boot. You could also use the raw [root exploit](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) to get root.
 - Enable root
 - Use adb to connect to your quest, either via USB or wifi
