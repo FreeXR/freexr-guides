@@ -77,20 +77,13 @@ Please first make sure your quest can't access the internet. Got that sorted? Go
 - In PrivateQuest
 	- Let PrivateQuest scan for your headset. If you've properly factory reset your headset, it *should* show up in the list here. If it does not, join our discord and ask for help.
    	- Connect to the headset.
+	- `init` -> `Set DeviceKey` -- This claims the headset so that private quest is the only authority that can control it!
 
-Now there are two directions you can go. You can either set up a fully de-metafied headset that is not logged in to any account and will work independently of meta's control (recommended), or you can opt to log your device back in to meta, but control it exclusively through privatequest.
-
-For a fully de-metafied setup:
-
-    - `init` -> `Set DeviceKey` -- This claims the headset so that private quest is the only authority that can control it! Note: if you use your official meta horizon devicekey, meta can still control it. So to be extra safe, just let privatequest set the device key.
-
-For a logged in setup:
+Optionally, if you want to log your quest in to your meta horizon account:
 
 - Init ->
 	- Set Oculus and Meta Access tokens to the value of `MetaProfileGenericAuthMap` above
 	- Set Oculus and Meta User ID to the value of `METAUserID`
-	- `Set combined Token`
-	- `Skip NUX`
 
 ### 4.1. Disable System Software Updates
 These steps will disable the built in system software updater as an extra measure. However, this is not foolproof! There have been documented cases of people's headsets being force upgraded by unknown means despite applying this command.
