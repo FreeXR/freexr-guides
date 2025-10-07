@@ -1,104 +1,135 @@
+> [!WARNING]
+> This guide is a work in progress! We're still figuring out the best ways to set up a Quest in a way that bypasses meta. Use this guide at your own risk! If you are not sure about what you are doing then join our community and ask questions so that we can improve this guide.
+
 ## How to switch to a PrivateQuest setup
 
-> [!WARNING]
-> This guide is a work in progress! We're still figuring out the best ways to set up a Quest in a way that bypasses meta. Use this guide at your own risk!
+private-quest is a 3rd party android application that's used as an alternative to the META Horizon app which implements most of the BLE calls needed to remotely control the headset.
 
-## 1. Back up your tokens
-### DeviceKey
-- Go to a site like <https://secure.oculus.com/> and log in
-- Open your browser's development tools and find the cookies tab
-- Find your `oc_www_at` cookie and get its value.
-- Run this in a terminal. Replace (xxx) with the value of the `oc_www_at` cookie:
-```
-curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=xxx" --data-urlencode "doc_id=7400628006644133"
-```
-- It'll spit some json back at you containing your DeviceKey. Keep it somewhere safe.
+Using private-quest is mandatory for root users as it enables you to skip the forced update after factory reset to fully recover from soft-bricking your headset as allowing the headset to update patches the vulnerability used for root elevation.
 
-### Meta Auth Tokens
-Either use a rooted phone, or install an android emulator (such as waydroid) on a PC to get this done
+# 0. Pre-Requirements
 
-If you want to use waydroid:
-- Install waydroid using the guides available for your platform (windows/mac/linux/whatever)
-- Initialize waydroid with `waydroid init -s GAPPS` (you need google play services for the meta horizon app to work)
-- Register your device id at [google's official page](https://www.google.com/android/uncertified)
-- After registering, wait a few minutes, then restart waydroid 
-- Install these using [this script](https://github.com/casualsnek/waydroid_script):
-    - ARM translation layer, so we can run the meta horizon app. Use either libhoudini or libndk (libndk crashed the meta horizon app in my case, libhoudini worked)
-    - magisk (we need root)
- 
-Then using either your rooted phone or waydroid:
+## 0.1. Make a backup of your deviceKey
 
-- Use either the play store, apkmirror, aurora store or whatever other method you prefer to install the Meta Horizon app
-- Log into it
-- Use root to copy  `/data/data/com.oculus.twilight/databases/prefs_db` to somewhere you can easily read it
+**WARNING:** This is **NOT** recommended as Meta Horizon enables Meta to interact with the Companion Server which has Android Admin API priviledges that then acts as a backdoor to the device. Instead consider generating a random deviceKey in private-quest.
 
-`prefs_db` is an sqlite file. You can use something like [sqlitebrowser](https://sqlitebrowser.org/) to read it's contents.
+If you want to be able to use Meta Horizon and Private Quest side by side you need to make a backup of your deviceKey.
 
-You're looking for `MetaProfileGenericAuthMap` in the `preferences` table within `prefs_db`.
+- **Method 1 (The "GraphQL"-way):**
+  - Go to a site like <https://secure.oculus.com/> and log in
+  - Open your browser's development tools and find the cookies tab
+  - Find your `oc_www_at` cookie and get its value.
+  - Run this in a terminal. Replace (TOKEN_HERE) with the value of the `oc_www_at` cookie:
+  ```console
+  $ curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=TOKEN_HERE" --data-urlencode "doc_id=7400628006644133" # Dump the document that contains the deviceKey
+  ```
+  - It'll spit some json back at you containing your DeviceKey. Keep it somewhere safe.
 
-If using sqlitebrowser, go to the Browse Data Tab, select the `preferences` table, and find `MetaProfileGenericAuthMap`. It should be a bunch of JSON code. Look for `id` and `token`, and get their values. Those are what you need!
+- **Method 2 (The "Rooted Android App"-way):**
+  - TODO: The key should be extractable from a directory somewhere in `/data/data/com.oculus.twilight`
+  - TODO: Technically possible via emulator as well
 
-> [!TIP]
-> You can also easily get it using this SQL code: `SELECT value FROM preferences WHERE key=='MetaProfileGenericAuthMap'`
 
-## 2. Download and install PrivateQuest
-On your phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
+- **Method 3 (The "JailBroken iOS App"-way):**
+  - TODO: Technically possible, but none tried it yet, generally not recommended.
 
-## 3. Disable your home internet
-Either use your phone to start a hotspot without internet, or use your router to turn off the internet while keeping WiFi on. Either way, **don't let your quest reach the internet during setup!**
+## 0.2. Collect your META/Oculus Access Tokens
 
-To use a PC, laptop or other non-android device:
+- **Method 1 (The "Command-line" Way):**
+- Download the Meta Horizon App from apkmirror, aurora store or if desperate from the play store and log-in
+  - Make a copy of `/data/data/com.oculis.twilight/databases/prefs_db` to your computer
+  - Invoke `SELECT value FROM preferences WHERE key=='MetaProfileGenericAuthMap` via the `sqlite` command
 
-  - Go to your router or modem's admin panel and find a switch that toggles the internet connection
-  - Use the toggle to switch your home internet off while keeping WiFi enabled
-  - Verify your WiFi-connected devices can no longer access the internet
+- **Method 1 (The "Rooted Android"-way):**
+  - Download the Meta Horizon App from apkmirror, aurora store or if desperate from the play store and log-in
+  - Make a copy of `/data/data/com.oculis.twilight/databases/prefs_db` to your computer
+  - Open the `prefs_db` in [sqlitebrowser](https://sqlitebrowser.org)
+    - In `Preferences` Table
+      - `MetaProfileGenericAuthMap` is your META and Oculus Access Token.
+      - `METAUserID` is your User ID for both tokens
 
-To use a phone:
+## 1. Download and install PrivateQuest
+- On your android phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
+- Make sure that the app has access to Bluetooth, Location and Finding Nearby Devices.
+- Set your `deviceKey` inside app's settings for the headset you want to set up.
 
-  - Install Termux on your phone (you can get it on F-Droid)
-  - Open Termux and type `pkg install android-tools`. It will ask you to confirm by typing Y and hitting enter - do so.
-  - **Turn off mobile data** on your phone and then start a hotspot.
+## 2. PrivateQuest initial setup
+**WARNING:** Do not let your headset connect to the internet until you disabled the `com.oculus.updater` application!
 
-## 4. PrivateQuest initial setup
-- Factory reset your headset
-- Put on your headset and turn it on. Let it sit on the initial screen, **don't let it connect to wi-fi!**
-- Once it's in first time setup, connect to your headset using PrivateQuest.
-    - Make sure the PrivateQuest app has access to bluetooth, location, and finding nearby devices
-    - Note: PrivateQuest cannot find the headset if it's already set up, because it will already have been assigned a DeviceKey.
-- Tap the three dots in the top right and go to settings 
-- Where it says DeviceKey, change it to the one you backed up earlier
-- Tap Set Key, press yes when it asks again, then scroll to the bottom and hit Back
+  - Private Quest
+    - Perform Factory Reset on your headset and turn it on so that it sit on the initial setup screen. **DO NOT CONTINUE THE SETUP!!**
+    - Connect to the headset
+    - Headset -> `init` -> `Set DeviceKey` -- This Claims the Headset so that private quest is the only authority that can control it unless you re-used the deviceKey for META Horizon
 
-> [!TIP]
-> If all you want to do is control your existing setup using PrivateQuest instead of the Horizon app, and don't need to reinstall or factory reset, you can skip the rest of this guide. Setting the DeviceKey is enough to gain control of an already set-up quest.
-
-## 5. Disable system software updates
+### 2.1. Disable System Software Updates
 > [!CAUTION]
 > **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
 
-- Beside 'OTA update', tap 'Get' (Note: This will just check to see OS updates are enabled, it won't actually update the headset).
-- The switch (beside OTA update) will now show you that updates are indeed enabled (they were already enabled - the app just didn't know this yet. 'Get' doesn't change any settings).
-- Now tap that switch to turn off updates. Tap 'Get' again to confirm that they are switched off.
+- Private Quest
+  - Headset -> Config -> OTA Update -> Get -- This will move the toggle to ON position
+  - Headset -> Config -> OTA Update -> Toggle **OFF**
+  - Headset -> Config -> OTA Update -> Get -- To confirm it's set OFF
+  - Headset -> `Control` -> Developer -> `Dev Mode` -> Get
+  - Headset -> `Control` -> Developer -> `Dev Mode` -> Toggle ON
+  - Headset -> `Control` -> Developer -> `Dev Mode` -> Get -- To confirm it's ON
+  - Headset -> `Control` -> Developer -> `ADB` -> Get
+  - Headset -> `Control` -> Developer -> `ADB` -> Toggle ON
+  - Headset -> `Control` -> Developer -> `ADB` -> Get -- To confirm it's ON
+- Android Debug Bridge ("adb")
+  ```console
+  $ adb shell pm disable-user --user 0 com.oculus.updater # Disable updates on META Quest Devices
+  ```
 
-## 6. Choose your setup
-Now decide if you want to use your tokens to log your headset back in, or use an accountless setup..
+### 2.2. Skip First Time Setup
+> [!CAUTION]
+> **If you don't do this, as soon as your quest gets to the update page it will force a software update, patching the vulnerability used for elevating root**
 
-You'll want a logged in setup if you want to play the games you bought from the quest store! If not, it's better to go accountless, because then your headset won't be tied to a meta account.
+#### 2.2.1. Accountless Setup
 
-## Accountless setup
-An accountless setup is easy and doesn't require root.
+It's possible to now set the headset without META and Oculus Access Tokens which will result in fully de-metafied headset and minimum UI by:
+  - Private Quest
+    - Headset -> Init -> `Set Combined Token`
+    - Headset -> Init -> `Skip NUX`
 
-In PrivateQuest:
+#### 2.2.2. Logged-in Setup
 
-- Init tab -> Set DeviceKey
-- Control tab -> Developer mode -> Get
-- Control tab -> Developer mode -> Switch to ON position
-- Control tab -> ADB -> Get
-- Control tab -> ADB -> Switch to ON position
-- Init tab -> Set Oculus token
-- Init tab -> Set Meta token
-- Init tab -> Skip NUX
+  - Headset -> Init
+    - Set Oculus and Meta Access tokens to the value of `MetaProfileGenericAuthMap` above
+    - Set Oculus and Meta User ID to the value of `METAUserID`
+    - `Set combined Token`
+    - `Skip NUX`
 
+### 3. Root the headset
+
+If you are on vulnerable firmware version install [Event Horizon](https://github.com/veygax/eventhorizon) on the headset and configure it to your liking.
+
+It's recommended to set the permission of `000` on the data directory of `com.oculus.updater` for extra safety, this requires root.
+
+```console
+# chmod 000 /data/data/com.oculus.updater # Neutralizes the updater's data directory so that nothing but root has permissions to interact with it
+```
+
+### 4. Post-Setup
+
+META Quest 3 devices are abusive surveillence devices made by vicious people who don't care about your well being and will do anything to use any collected information about you to use against you as explained by Family IT Guy: https://www.youtube.com/watch?v=ooy7aLDrY0E
+
+To mitigate this we created https://github.com/FreeXR/FreeXR-Hijack tool which acts as a "pseudo-ROM" that replaces all META applications with open-source alternatives and sets up the device to be more functional and useble beyond just niche gaming console, it is still in development and might be in the future merged into Event Horizon, but if you want to use it then you can:
+  - Download the `init` branch of the repository on your computer
+  - Make sure that the headset is authentificated over ADB
+  - FreeXR Hijack
+    ```console
+    $ ./src/main.sh --HIJACK # Perform the Hijack
+    ```
+
+This will debloat the headset and tries to get rid of all, but functional tracking (if you choose to have META Store) from the device. Please let us know if the hijack fails for whatever reason so that we can fix it.
+
+## Communities
+
+* Discord: https://discord.gg/ABCXxDyqrH
+* Matrix: Pending..
+* IRC: Pending..
+
+<!--
 ## Logged-in setup
 > [!NOTE]
 > You'll need root to skip the first time setup screen (NUX). For rooting to work, you'll need to be on a vulnerable version of horizonOS. See [the exploit github page](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) for information on which versions are vulnerable.
@@ -111,13 +142,13 @@ In PrivateQuest:
     - `oculussetting --set first_time_nux_ota_state notify_endpoint`
     - In the Config tab, Set the Oculus and Meta token to the ones you got from `MetaProfileGenericAuthMap`.
 	- Set UserId underneath both the Oculus and Meta token to the `UserId` you got from `MetaProfileGenericAuthMap`
-		<!-- - In privatequest over on your phone, use *Set Tokens* (*????? try not doing that, see if it works - rose*) -->
+		In privatequest over on your phone, use *Set Tokens* (*????? try not doing that, see if it works - rose*)
 	- `oculussetting --set first_time_nux_ota_state COMPLETE`
 	- `reboot`
 - Verify the updater is disabled using `adb shell pm list packages -d`. It should show the updater in the list, which is the list of disabled packages.
 - Proceed with [Post-setup](#post-setup) for extra security against your quest getting forcibly updated
 
-<!--
+
 Note: *In the horizon app, if it's still asking for a pairing code even though you don't have one, you can fix this, but it will require root.*
 
 - Force enable ADB through PQ
@@ -147,13 +178,3 @@ old, may not be needed!
     - `oculussetting --set first_time_nux_ota_state COMPLETE`
     - `reboot`
 -->
-
-## Post-setup
-- If you haven't already, install [Event Horizon](https://github.com/veygax/eventhorizon). This will root your quest with a simple button press! You can also set it to always root your quest on boot. You could also use the raw [root exploit](https://github.com/FreeXR/eureka_panther-adreno-gpu-exploit-1) to get root.
-- Enable root
-- Use adb to connect to your quest, either via USB or wifi
-- Run `adb shell`
-- Now in adb shell:
-	- run `pm disable-user --user 0 com.oculus.updater`
-	- run `su`. If the exploit worked, you'll be in a root shell.
-	- In the root shell, run `chmod 000 /data/data/com.oculus.updater`. This will completely block the updater app from being written to.
