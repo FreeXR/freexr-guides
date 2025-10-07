@@ -1,71 +1,103 @@
 > [!WARNING]
-> This guide is a work in progress! We're still figuring out the best ways to set up a Quest in a way that bypasses meta. Use this guide at your own risk! If you are not sure about what you are doing then join our community and ask questions so that we can improve this guide.
+> This guide is a work in progress! We're still figuring out the best ways to set up a Quest in a way that bypasses meta. Use this guide at your own risk! If you need help, join the [freeXR discord server](https://discord.gg/ABCXxDyqrH). Your questions can help us improve this guide.
 
-## How to switch to a PrivateQuest setup
+## What is PrivateQuest and why do I need it?
+PrivateQuest is a third party android application that's an alternative to the Meta Horizon android app, which implements most of the BLE (BluetoothLowEnergy) calls needed to remotely control the headset.
 
-private-quest is a 3rd party android application that's used as an alternative to the META Horizon app which implements most of the BLE calls needed to remotely control the headset.
+Using PrivateQuest is highly recommended, if not mandatory, for root users, as it enables you to skip the forced update to the latest quest system software after a factory reset. This is essential for recovering from softbricks.
 
-Using private-quest is mandatory for root users as it enables you to skip the forced update after factory reset to fully recover from soft-bricking your headset as allowing the headset to update patches the vulnerability used for root elevation.
+> [!NOTE]
+> The Meta Horizon android app enables Meta to interact with the Companion Server service on your quest, which has Android Admin API priviledges. This means that even with your quest fully blocked off from the internet, Meta can essentially use this as a backdoor to access your quest.
+> Therefore, once you've set your quest up using PrivateQuest, we strongly recommend not attempting to connect the Meta Horizon app to your Quest again.
 
-# 0. Pre-Requirements
+# Recommended setup
+## 1. Backing up essential data
+### DeviceKey
+Your DeviceKey is the key that the Meta Horizon app has assigned to your headset in order to remotely control it. It's recommended to make a backup of this.
 
-## 0.1. Make a backup of your deviceKey
+- Go to a site like <https://secure.oculus.com/> and log in
+- Open your browser's development tools and find the cookies tab
+- Find your `oc_www_at` cookie and get its value.
+- Run this in a terminal. Replace (TOKEN_HERE) with the value of the `oc_www_at` cookie:
+```console
+$ curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=TOKEN_HERE" --data-urlencode "doc_id=7400628006644133" # Dump the document that contains the deviceKey
+```
+- It'll spit some json back at you containing your DeviceKey. Keep it somewhere safe.
 
-**WARNING:** This is **NOT** recommended as Meta Horizon enables Meta to interact with the Companion Server which has Android Admin API priviledges that then acts as a backdoor to the device. Instead consider generating a random deviceKey in private-quest.
+### Meta/Oculus Access Tokens
+Your Meta/Oculus access token is the token that is used to log in to your meta and oculus accounts. This is needed in case you ever want to log into your meta account whilst using privatequest! (for example to download the games you own on the meta store)
 
-If you want to be able to use Meta Horizon and Private Quest side by side you need to make a backup of your deviceKey.
+> [!CAUTION]
+> When using the meta horizon app, **never connect it to your headset**. We're only trying to fetch your account token, connecting to the headset is not needed.
+> If you connect to the headset, the companion server might force upgrade you, causing you to lose the root exploit.
 
-- **Method 1 (The "GraphQL"-way):**
-  - Go to a site like <https://secure.oculus.com/> and log in
-  - Open your browser's development tools and find the cookies tab
-  - Find your `oc_www_at` cookie and get its value.
-  - Run this in a terminal. Replace (TOKEN_HERE) with the value of the `oc_www_at` cookie:
-  ```console
-  $ curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=TOKEN_HERE" --data-urlencode "doc_id=7400628006644133" # Dump the document that contains the deviceKey
-  ```
-  - It'll spit some json back at you containing your DeviceKey. Keep it somewhere safe.
+Either use a rooted phone, or install an android emulator (such as waydroid) on a PC to get this done
 
-- **Method 2 (The "Rooted Android App"-way):**
-  - TODO: The key should be extractable from a directory somewhere in `/data/data/com.oculus.twilight`
-  - TODO: Technically possible via emulator as well
+If you want to use waydroid:
+- Install waydroid using the guides available for your platform (windows/mac/linux/whatever)
+- Initialize waydroid with `waydroid init -s GAPPS` (you need google play services for the meta horizon app to work)
+- Register your device id at [google's official page](https://www.google.com/android/uncertified)
+- After registering, wait a few minutes, then restart waydroid 
+- Install these using [this script](https://github.com/casualsnek/waydroid_script):
+    - ARM translation layer, so we can run the meta horizon app. Use either libhoudini or libndk (libndk crashed the meta horizon app in my case, libhoudini worked)
+    - magisk (we need root)
+ 
+Then using either your rooted phone or waydroid:
 
+- Use either the play store, apkmirror, aurora store or whatever other method you prefer to install the Meta Horizon app
+- Log into it
+- **Do not connect to your headset, as this will let meta backdoor into your quest.**
+- Use root to copy  `/data/data/com.oculus.twilight/databases/prefs_db` to somewhere you can easily read it
 
-- **Method 3 (The "JailBroken iOS App"-way):**
-  - TODO: Technically possible, but none tried it yet, generally not recommended.
+`prefs_db` is an sqlite file. You can use something like [sqlitebrowser](https://sqlitebrowser.org/) to read it's contents.
 
-## 0.2. Collect your META/Oculus Access Tokens
+If using sqlitebrowser, go to the Browse Data Tab, select the `preferences` table. Then:
+- `MetaProfileGenericAuthMap` is your META and Oculus Access Token. It should be a bunch of JSON code. The values of `userID` and `token` are what you need.
+- `MetaUserID` is your User ID for both tokens
 
-- **Method 1 (The "Command-line" Way):**
-- Download the Meta Horizon App from apkmirror, aurora store or if desperate from the play store and log-in
-  - Make a copy of `/data/data/com.oculis.twilight/databases/prefs_db` to your computer
-  - Invoke `SELECT value FROM preferences WHERE key=='MetaProfileGenericAuthMap` via the `sqlite` command
+Make a backup of those, save them somewhere safe. We recommend also just keeping a copy of the `prefs_db` file around. Done!
 
-- **Method 1 (The "Rooted Android"-way):**
-  - Download the Meta Horizon App from apkmirror, aurora store or if desperate from the play store and log-in
-  - Make a copy of `/data/data/com.oculis.twilight/databases/prefs_db` to your computer
-  - Open the `prefs_db` in [sqlitebrowser](https://sqlitebrowser.org)
-    - In `Preferences` Table
-      - `MetaProfileGenericAuthMap` is your META and Oculus Access Token.
-      - `METAUserID` is your User ID for both tokens
-
-## 1. Download and install PrivateQuest
+## 2. Download and install PrivateQuest
 - On your android phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
 - Make sure that the app has access to Bluetooth, Location and Finding Nearby Devices.
-- Set your `deviceKey` inside app's settings for the headset you want to set up.
 
-## 2. PrivateQuest initial setup
-**WARNING:** Do not let your headset connect to the internet until you disabled the `com.oculus.updater` application!
-
-  - Private Quest
-    - Perform Factory Reset on your headset and turn it on so that it sit on the initial setup screen. **DO NOT CONTINUE THE SETUP!!**
-    - Connect to the headset
-    - Headset -> `init` -> `Set DeviceKey` -- This Claims the Headset so that private quest is the only authority that can control it unless you re-used the deviceKey for META Horizon
-
-### 2.1. Disable System Software Updates
+## 3. Block your Quest from accessing the internet
 > [!CAUTION]
-> **If you don't do this, as soon as your quest goes online, it will force upgrade itself to the latest (non-rootable) version of the system software!**
+> This step is essential if you want to continue using root!
 
-- Private Quest
+There are many ways you can do this. Either:
+- Block your quest's MAC address within your home router (using something like a parental control setting)
+- Use a pi-hole within your home network to block all of meta's servers
+- Or, if those are too much hassle, just shut off the internet completely while you do setup.
+
+## 4. PrivateQuest initial setup
+Please first make sure your quest can't access the internet. Got that sorted? Good! Time to get started..
+
+- Perform a Factory Reset on your headset, let it finish, then once it reboots, let it sit on the initial setup screen. **Do not continue the setup, as that will start attempting to update your headset to a non-vulnerable version.**
+- In PrivateQuest
+	- Let PrivateQuest scan for your headset. If you've properly factory reset your headset, it *should* show up in the list here. If it does not, join our discord and ask for help.
+   	- Connect to the headset.
+
+Now there are two directions you can go. You can either set up a fully de-metafied headset that is not logged in to any account and will work independently of meta's control (recommended), or you can opt to log your device back in to meta, but control it exclusively through privatequest.
+
+For a fully de-metafied setup:
+
+    - `init` -> `Set DeviceKey` -- This claims the headset so that private quest is the only authority that can control it! Note: if you use your official meta horizon devicekey, meta can still control it. So to be extra safe, just let privatequest set the device key.
+
+For a logged in setup:
+
+- Init ->
+	- Set Oculus and Meta Access tokens to the value of `MetaProfileGenericAuthMap` above
+	- Set Oculus and Meta User ID to the value of `METAUserID`
+	- `Set combined Token`
+	- `Skip NUX`
+
+### 4.1. Disable System Software Updates
+These steps will disable the built in system software updater as an extra measure. However, this is not foolproof! There have been documented cases of people's headsets being force upgraded by unknown means despite applying this command.
+
+Later on in the guide, we'll take care of that risk. For now, apply this:
+
+- In PrivateQuest
   - Headset -> Config -> OTA Update -> Get -- This will move the toggle to ON position
   - Headset -> Config -> OTA Update -> Toggle **OFF**
   - Headset -> Config -> OTA Update -> Get -- To confirm it's set OFF
@@ -75,21 +107,75 @@ If you want to be able to use Meta Horizon and Private Quest side by side you ne
   - Headset -> `Control` -> Developer -> `ADB` -> Get
   - Headset -> `Control` -> Developer -> `ADB` -> Toggle ON
   - Headset -> `Control` -> Developer -> `ADB` -> Get -- To confirm it's ON
-- Android Debug Bridge ("adb")
+- Now, over wireless ADB, run this command:
   ```console
   $ adb shell pm disable-user --user 0 com.oculus.updater # Disable updates on META Quest Devices
   ```
 
-### 2.2. Skip First Time Setup
+### 4.2. Skip First Time Setup
+Now we can safely skip the first time setup. Do this:
+
+- Private Quest
+	- Headset -> Init -> `Set Combined Token`
+	- Headset -> Init -> `Skip NUX`
+
+## 5. Root the headset
+Install [Event Horizon](https://github.com/veygax/eventhorizon) on the headset. Open it up, and enable `Root on Boot`, then press the `Root Now` button.
+
+Let it perform the rooting process, then wait for it to restart the system UI. Congrats, you're rooted!
+
+## 6. Block meta from ever upgrading you again
 > [!CAUTION]
-> **If you don't do this, as soon as your quest gets to the update page it will force a software update, patching the vulnerability used for elevating root**
+> This step is essential if you want to continue using root!
 
-#### 2.2.1. Accountless Setup
+Open event horizon again. Now head into AiO tweaks.
+Inside Event Horizon's AiO tweaks, find the Meta Domain Blocker setting. Enable `Enable on Boot`, and enable the blocker.
 
-It's possible to now set the headset without META and Oculus Access Tokens which will result in fully de-metafied headset and minimum UI by:
-  - Private Quest
-    - Headset -> Init -> `Set Combined Token`
-    - Headset -> Init -> `Skip NUX`
+Now it should be safe to re-enable your internet!
+
+It's probably self explanatory, but you should never turn off this setting. If that setting is off and you let your quest connect to the internet, it will most likely start to upgrade itself. Meta is very aggressive with its upgrade forcing.
+
+As an extra measure, it's recommended to also disable read/write permissions on the `com.oculus.updater` directory for extra safety. This requires root.
+
+To do so:
+
+```console
+# chmod 000 /data/data/com.oculus.updater # Neutralizes the updater's data directory so that nothing but root has permissions to interact with it
+```
+
+### 7. Optional: FreeXR Hijack
+Meta Quest 3 devices are surveillance devices, made by people who don't have your best interests at heart, which gather data about you that they can use against you. Family IT Guy explains it here: https://www.youtube.com/watch?v=ooy7aLDrY0E
+
+To mitigate this, we created [FreeXR Hijack](https://github.com/FreeXR/FreeXR-Hijack). It acts as a sort-of pseudo custom ROM that replaces all Meta applications with open-source alternatives and sets up the device to be more functional and usable beyond just being a gaming console. We would like to create a full custom ROM, however the bootloader needs to be unlocked for that first, so we have settled on this for now. It is still in development and might in the future be merged into Event Horizon, but if you want to use it right now, then you can:
+  - Download the `init` branch of the [repository](https://github.com/FreeXR/FreeXR-Hijack) on your computer
+  - Make sure that your computer is connected to the headset over ADB
+  - FreeXR Hijack
+    ```console
+    $ ./src/main.sh --HIJACK # Perform the Hijack
+    ```
+
+This will debloat the headset and tries to get rid of all tracking, telemetry, and bloat, except for the tracking required for essential functionality (if you choose to have the Meta Store). Please let us know if the hijack fails for whatever reason, so that we can fix it!
+
+## Communities
+
+* Discord: https://discord.gg/ABCXxDyqrH
+* Matrix: Pending..
+* IRC: Pending..
+
+<!--
+# Experimental setup: Log your quest in to your meta account whilst using private-quest
+> [!DANGER]
+> The Meta Horizon android app enables Meta to interact with the Companion Server on your quest, which has Android Admin API priviledges. This will then act as a backdoor to the device.
+> **This means they can, and probably __WILL__, force upgrade your device and make you lose root.
+> This is therefore strongly recommended against.
+
+- **Method 2 (The "Rooted Android App"-way):**
+  - TODO: The key should be extractable from a directory somewhere in `/data/data/com.oculus.twilight`
+  - TODO: Technically possible via emulator as well
+
+
+- **Method 3 (The "JailBroken iOS App"-way):**
+  - TODO: Technically possible, but none tried it yet, generally not recommended.
 
 #### 2.2.2. Logged-in Setup
 
@@ -98,36 +184,7 @@ It's possible to now set the headset without META and Oculus Access Tokens which
     - Set Oculus and Meta User ID to the value of `METAUserID`
     - `Set combined Token`
     - `Skip NUX`
-
-### 3. Root the headset
-
-If you are on vulnerable firmware version install [Event Horizon](https://github.com/veygax/eventhorizon) on the headset and configure it to your liking.
-
-It's recommended to set the permission of `000` on the data directory of `com.oculus.updater` for extra safety, this requires root.
-
-```console
-# chmod 000 /data/data/com.oculus.updater # Neutralizes the updater's data directory so that nothing but root has permissions to interact with it
-```
-
-### 4. Post-Setup
-
-META Quest 3 devices are abusive surveillence devices made by vicious people who don't care about your well being and will do anything to use any collected information about you to use against you as explained by Family IT Guy: https://www.youtube.com/watch?v=ooy7aLDrY0E
-
-To mitigate this we created https://github.com/FreeXR/FreeXR-Hijack tool which acts as a "pseudo-ROM" that replaces all META applications with open-source alternatives and sets up the device to be more functional and useble beyond just niche gaming console, it is still in development and might be in the future merged into Event Horizon, but if you want to use it then you can:
-  - Download the `init` branch of the repository on your computer
-  - Make sure that the headset is authentificated over ADB
-  - FreeXR Hijack
-    ```console
-    $ ./src/main.sh --HIJACK # Perform the Hijack
-    ```
-
-This will debloat the headset and tries to get rid of all, but functional tracking (if you choose to have META Store) from the device. Please let us know if the hijack fails for whatever reason so that we can fix it.
-
-## Communities
-
-* Discord: https://discord.gg/ABCXxDyqrH
-* Matrix: Pending..
-* IRC: Pending..
+-->
 
 <!--
 ## Logged-in setup
