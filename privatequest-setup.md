@@ -138,7 +138,7 @@ adb install LightningLauncher.apk
 ```
 - Run this command. This will start lightning launcher:
 	```console
-	adb shell am start -n com.veygax.eventhorizon/.ui.activities.MainActivity
+	adb shell am start com.threethan.launcher
  	```
 - Once lightning launcher is open, look for the camera icon on your dock. Drag it down off the dock, and wait until the text "unpin" appears, then let go.
 - Now grab the lightning launcher icon in the dock and put it where the camera icon used to be
