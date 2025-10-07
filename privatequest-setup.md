@@ -14,10 +14,15 @@ Using PrivateQuest is highly recommended, if not mandatory, for root users, as i
 > [!CAUTION]
 > This step is essential if you want to continue using root!
 
-Before we do anything else, you need to prevent your quest from accessing any of meta's servers. It's best to just completely block it off from the internet altogether during setup. There are many ways you can do this. Either:
+Before we do anything else, you need to prevent your quest from accessing any of meta's servers. It's best to just completely block it off from the internet altogether during setup.
+
+But, in order to connect to our headset after privatequest has control of it, we do need a working wifi network! Just with no internet access.
+
+There are many ways you can do this. Either:
 - Shut off your home internet completely while you do setup
-- Block your quest's MAC address within your home router (using something like a parental control setting)
+- Block your quest's MAC address within your home router (using something like a parental control setting). Please note that a quest by default will use a randomized MAC address, and this is a per-network setting. When connecting your quest to a wifi network, make sure to set that to `use device MAC address` before connecting!
 - Use a pi-hole within your home network to block all of meta's servers
+- Use a mobile hotspot on your phone, and make sure to turn off mobile data so that your hotspot can't access the internet
 
 Whichever one you use, make sure your quest absolutely cannot access the internet! This is **crucial**. Check to make sure it absolutely cannot.
 
@@ -73,7 +78,7 @@ Make a backup of those, save them somewhere safe. We recommend also just keeping
 - On your android phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
 - Make sure that the app has access to Bluetooth, Location and Finding Nearby Devices.
 
-## 4. PrivateQuest initial setup
+## 4. PrivateQuest setup
 Please first make sure your quest can't access the internet. Got that sorted? Good! Time to get started..
 
 - Perform a Factory Reset on your headset, let it finish, then once it reboots, let it sit on the initial setup screen. **Do not continue the setup, as that will start attempting to update your headset to a non-vulnerable version.**
@@ -86,6 +91,9 @@ Please first make sure your quest can't access the internet. Got that sorted? Go
 	- Now in the init tab, press `Set DeviceKey`
  	- Doing all this has made it so that PrivateQuest is the only authority with control over your headset! Meta's phone app can no longer control it.
    	- In the Config tab, press `Set time`
+	- In the Config tab, next to OTA Update, press Get. This will move the toggle to ON position.
+  	- Now slide the OTA Update toggle to **OFF**
+  	- Now press Get again to confirm that ota update is off!
 
 Now if you want a meta-less setup, in the Init tab, press `Set combined token`.
 
@@ -99,33 +107,33 @@ Finally:
 
 - Init -> `Skip NUX`
 
-Let it load the system UI. Once you're in, proceed with disabling software updates:
-
-> [!NOTE]
-> This is not foolproof! There have been documented cases of people's headsets being force upgraded by unknown means despite applying this command. Later on in the guide, we'll take care of that risk.
-
-- In PrivateQuest
-  - Headset -> Config -> OTA Update -> Get -- This will move the toggle to ON position
-  - Headset -> Config -> OTA Update -> Toggle **OFF**
-  - Headset -> Config -> OTA Update -> Get -- To confirm it's set OFF
-  - Headset -> `Control` -> Developer -> `Dev Mode` -> Get
-  - Headset -> `Control` -> Developer -> `Dev Mode` -> Toggle ON
-  - Headset -> `Control` -> Developer -> `Dev Mode` -> Get -- To confirm it's ON
-  - Headset -> `Control` -> Developer -> `ADB` -> Get
-  - Headset -> `Control` -> Developer -> `ADB` -> Toggle ON
-  - Headset -> `Control` -> Developer -> `ADB` -> Get -- To confirm it's ON
-- Now, over wireless ADB, run this command:
-  ```console
-  adb shell pm disable-user --user 0 com.oculus.updater
-  ```
+Let it load the system UI. Once it's loaded, proceed with the next step!
 
 ## 5. Post-setup
 Okay, now, if you used a meta-less setup, more than likely you'll be unable to see or open any apps! Not good.
 
 So we're going to need to use ADB to do some sorcery and bypass things.
 
+Remember that we blocked off the internet but not the wifi network? That comes into play now.
+
+Connect both your headset and your phone to your home wifi network **and once again make sure any devices on your wifi network cannot access the internet**.
+
+In PrivateQuest:
+
+- Next to ADB, press `Get`. It should slide to ON.
+- Next to ADB over TCP, press `Start`. Put on your headset and choose `Always allow over this network`. Take your headset off again or use passthrough.
+- Next to ADB over TCP, press Info. This will give you the commands needed to connect to your quest!
+- Using either a laptop, pc, phone, or whatever other device you can use, connect to your quest using the commands it has given you. You can also use [Termux](https://play.google.com/store/apps/details?id=com.termux) on your phone if you don't have access to a computer!
+
+Once you are connected, run:
+```console
+adb shell pm disable-user --user 0 com.oculus.updater
+```
+This will disable the quest system software updater service. Note however that this is not foolproof, and there have been documented cases of a quest still being upgraded despite applying this command. So you'll still need to block meta!
+
+Now:
+
 - Download [Lightning Launcher](https://github.com/threethan/LightningLauncher/releases)
-- Connect to your headset using wireless ADB
 - Install lightning launcher like so:
 ```console
 adb install LightningLauncher.apk
@@ -142,6 +150,9 @@ adb install LightningLauncher.apk
 	- Then choose to install the app library shortcut, then follow the instructions to activate it
 
 ## 6. Root the headset
+> [!NOTE]
+> Even if you don't want to use root for anything, this is strongly recommended because it implements a bunch of things that further protect your quest from being forcibly upgraded.
+
 Download [Event Horizon](https://github.com/veygax/eventhorizon). Once again, using adb, install it like so:
 ```
 adb install eventhorizon.apk
@@ -151,25 +162,30 @@ Once it's installed, find it in lightning launcher, open it up, and enable `Root
 
 Let it perform the rooting process, then wait for it to restart the system UI. Congrats, you're rooted!
 
-## 6. Block meta from ever upgrading you again
+## 7. Block meta from ever upgrading you again
 > [!CAUTION]
 > This step is essential if you want to continue using root!
 
-Open event horizon again. Now head into AiO tweaks.
-Inside Event Horizon's AiO tweaks, find the Meta Domain Blocker setting. Enable `Enable on Boot`, and enable the blocker.
-
-As an extra measure, it's recommended to also disable read/write permissions on the `com.oculus.updater` directory for extra safety. This requires root.
-
-To do so:
-
-```console
-chmod 000 /data/data/com.oculus.updater # Neutralizes the updater's data directory so that nothing but root has permissions to interact with it
-```
-
-## 7. Cautiously re-enable internet access
-If you have verified that eventhorizon's domain blocker is working flawlessly, it should now be safe to unblock your Quest from accessing the internet.
+Open event horizon again. Now head into `AiO tweaks`.
+Inside Event Horizon's AiO tweaks, find the Meta Domain Blocker setting. Enable `Enable on Boot`, and enable the blocker. From now on, this will block your Quest from accessing meta's servers.
 
 It's probably self explanatory, but you should never turn off this setting. If that setting is off and you let your quest connect to the internet, it will most likely start to upgrade itself! Meta is very aggressive with its forced upgrades, and once you've been upgraded, you cannot downgrade due to e-fuses in the hardware. So don't let that happen!
+
+Still inside `AiO Tweaks`, turn on wireless ADB (and wireless ADB on boot if you prefer). No more need to use privatequest for that!
+
+Now connect to your quest using wireless adb. Then:
+
+```console
+adb shell
+su
+chmod 000 /data/data/com.oculus.updater
+exit
+exit
+```
+This will neutralize the updater's data directory so that nothing but root has permissions to interact with it. This is yet more security against being upgraded.
+
+## 8. Cautiously re-enable internet access
+If you have verified that eventhorizon's domain blocker is working flawlessly, it should now be safe to unblock your Quest from accessing the internet.
 
 If you want to be extra safe, you can use something like a pi-hole to block your quest from accessing meta's domains whilst still allowing access to the wider internet.
 
@@ -191,7 +207,7 @@ oculusrift.com
 facebookvirtualassistant.com
 ```
 
-### 8. Optional: FreeXR Hijack
+### 9. Optional: FreeXR Hijack
 Meta Quest 3 devices are surveillance devices, made by people who don't have your best interests at heart, which gather data about you that they can use against you. Family IT Guy explains it here: https://www.youtube.com/watch?v=ooy7aLDrY0E
 
 To mitigate this, we created [FreeXR Hijack](https://github.com/FreeXR/FreeXR-Hijack). It acts as a sort-of pseudo custom ROM that replaces all Meta applications with open-source alternatives and sets up the device to be more functional and usable beyond just being a gaming console. We would like to create a full custom ROM, however the bootloader needs to be unlocked for that first, so we have settled on this for now. It is still in development and might in the future be merged into Event Horizon, but if you want to use it right now, then you can:
