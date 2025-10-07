@@ -99,7 +99,7 @@ Finally:
 
 - Init -> `Skip NUX`
 
-Let it reboot. Once you're in, proceed with disabling software updates:
+Let it load the system UI. Once you're in, proceed with disabling software updates:
 
 > [!NOTE]
 > This is not foolproof! There have been documented cases of people's headsets being force upgraded by unknown means despite applying this command. Later on in the guide, we'll take care of that risk.
