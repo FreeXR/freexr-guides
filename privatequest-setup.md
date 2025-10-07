@@ -74,15 +74,13 @@ If using sqlitebrowser, go to the Browse Data Tab, select the `preferences` tabl
 
 Make a backup of those, save them somewhere safe. We recommend also just keeping a copy of the `prefs_db` file around. Done!
 
-## 3. Download and install PrivateQuest
-- On your android phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
-- Make sure that the app has access to Bluetooth, Location and Finding Nearby Devices.
-
-## 4. PrivateQuest setup
+## 3. PrivateQuest setup
 Please first make sure your quest can't access the internet. Got that sorted? Good! Time to get started..
 
+- On your android phone, download and install PrivateQuest from here: <https://xdaforums.com/t/app-5-0-private-quest-vr-headset-management-tool.4695491/>
+- Make sure that the app has access to Bluetooth, Location and Finding Nearby Devices.
 - Perform a Factory Reset on your headset, let it finish, then once it reboots, let it sit on the initial setup screen. **Do not continue the setup, as that will start attempting to update your headset to a non-vulnerable version.**
-- In PrivateQuest
+- Open up PrivateQuest. Then, in PrivateQuest:
 	- Let PrivateQuest scan for your headset. If you've properly factory reset your headset, it *should* show up in the list here. If it does not, join our discord and ask for help.
    	- Connect to the headset.
    	- In the settings, go to DeviceKey, copy whatever's in there and paste it somewhere safe just in case.
@@ -109,7 +107,7 @@ Finally:
 
 Let it load the system UI. Once it's loaded, proceed with the next step!
 
-## 5. Post-setup
+## 4. Post-setup
 Okay, now, if you used a meta-less setup, more than likely you'll be unable to see or open any apps! Not good.
 
 So we're going to need to use ADB to do some sorcery and bypass things.
@@ -149,10 +147,8 @@ adb install LightningLauncher.apk
 	- To do so, inside lightning launcher, go to Settings, then Shortcuts, and pick whether you're using Dock or Navigator (in a fresh setup you're more than likely using Dock)
 	- Then choose to install the app library shortcut, then follow the instructions to activate it
 
-## 6. Root the headset
-> [!NOTE]
-> Even if you don't want to use root for anything, this is strongly recommended because it implements a bunch of things that further protect your quest from being forcibly upgraded.
-
+## 5. Root the headset
+### Install root
 Download [Event Horizon](https://github.com/veygax/eventhorizon). Once again, using adb, install it like so:
 ```
 adb install eventhorizon.apk
@@ -162,7 +158,7 @@ Once it's installed, find it in lightning launcher, open it up, and enable `Root
 
 Let it perform the rooting process, then wait for it to restart the system UI. Congrats, you're rooted!
 
-## 7. Block meta from ever upgrading you again
+### Block meta from ever upgrading you again
 > [!CAUTION]
 > This step is essential if you want to continue using root!
 
@@ -184,7 +180,7 @@ exit
 ```
 This will neutralize the updater's data directory so that nothing but root has permissions to interact with it. This is yet more security against being upgraded.
 
-## 8. Cautiously re-enable internet access
+## 6. Cautiously re-enable internet access
 If you have verified that eventhorizon's domain blocker is working flawlessly, it should now be safe to unblock your Quest from accessing the internet.
 
 If you want to be extra safe, you can use something like a pi-hole to block your quest from accessing meta's domains whilst still allowing access to the wider internet.
@@ -207,7 +203,7 @@ oculusrift.com
 facebookvirtualassistant.com
 ```
 
-### 9. Optional: FreeXR Hijack
+### 7. Optional: FreeXR Hijack
 Meta Quest 3 devices are surveillance devices, made by people who don't have your best interests at heart, which gather data about you that they can use against you. Family IT Guy explains it here: https://www.youtube.com/watch?v=ooy7aLDrY0E
 
 To mitigate this, we created [FreeXR Hijack](https://github.com/FreeXR/FreeXR-Hijack). It acts as a sort-of pseudo custom ROM that replaces all Meta applications with open-source alternatives and sets up the device to be more functional and usable beyond just being a gaming console. We would like to create a full custom ROM, however the bootloader needs to be unlocked for that first, so we have settled on this for now. It is still in development and might in the future be merged into Event Horizon, but if you want to use it right now, then you can:
