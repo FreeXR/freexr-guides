@@ -32,7 +32,7 @@ Your DeviceKey is the key that the Meta Horizon app has assigned to your headset
 - Find your `oc_www_at` cookie and get its value.
 - Run this in a terminal. Replace (TOKEN_HERE) with the value of the `oc_www_at` cookie:
 ```console
-$ curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=TOKEN_HERE" --data-urlencode "doc_id=7400628006644133" # Dump the document that contains the deviceKey
+curl https://graph.oculus.com/graphql -H "Content-Type: application/x-www-form-urlencoded" --data-urlencode "access_token=TOKEN_HERE" --data-urlencode "doc_id=7400628006644133" # Dump the document that contains the deviceKey
 ```
 - It'll spit some json back at you containing your DeviceKey. Keep it somewhere safe.
 
@@ -127,12 +127,12 @@ So we're going to need to use ADB to do some sorcery and bypass things.
 - Download [Lightning Launcher](https://github.com/threethan/LightningLauncher/releases)
 - Connect to your headset using wireless ADB
 - Install lightning launcher like so:
-```
+```console
 adb install LightningLauncher.apk
 ```
 - Run this command. This will start lightning launcher:
-	```
-	adb shell am start -n com.veygax.eventhorizon/.ui.activities.MainActivity`
+	```console
+	adb shell am start -n com.veygax.eventhorizon/.ui.activities.MainActivity
  	```
 - Once lightning launcher is open, look for the camera icon on your dock. Drag it down off the dock, and wait until the text "unpin" appears, then let go.
 - Now grab the lightning launcher icon in the dock and put it where the camera icon used to be
@@ -163,7 +163,7 @@ As an extra measure, it's recommended to also disable read/write permissions on 
 To do so:
 
 ```console
-# chmod 000 /data/data/com.oculus.updater # Neutralizes the updater's data directory so that nothing but root has permissions to interact with it
+chmod 000 /data/data/com.oculus.updater # Neutralizes the updater's data directory so that nothing but root has permissions to interact with it
 ```
 
 ## 7. Cautiously re-enable internet access
@@ -199,7 +199,7 @@ To mitigate this, we created [FreeXR Hijack](https://github.com/FreeXR/FreeXR-Hi
   - Make sure that your computer is connected to the headset over ADB
   - FreeXR Hijack
     ```console
-    $ ./src/main.sh --HIJACK # Perform the Hijack
+    ./src/main.sh --HIJACK
     ```
 
 This will debloat the headset and tries to get rid of all tracking, telemetry, and bloat, except for the tracking required for essential functionality (if you choose to have the Meta Store). Please let us know if the hijack fails for whatever reason, so that we can fix it!
